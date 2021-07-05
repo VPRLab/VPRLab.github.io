@@ -1,4 +1,7 @@
-## Welcome to GitHub Pages
+## Welcome to Vulnerability and Privacy Research (VPR) Lab
+
+![Image](https://raw.githubusercontent.com/VPRLab/VPRLab.github.io/master/VPRLabMembers.png)
+
 
 You can use the [editor on GitHub](https://github.com/VPRLab/VPRLab.github.io/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
 
