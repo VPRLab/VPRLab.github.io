@@ -1,99 +1,179 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opencv JS</title>
-    <script async src="opencv.js" onload="openCvReady();"></script>
+    <title>realtime iExam</title>
+    <!-- <script async src="opencv.js" onload="openCvReady();"></script> -->
     <!-- <script src="utils.js"></script> -->
     <style>
-        #cam_input, #canvas_output {
+        body {
+            margin: 0;
+            align-self: center;
+        }
+        #zoom_window_text, #process_window_text {
+            margin: 0px;
+            grid-column: 6 / 9;
+            font-size: 30px;
+            z-index: 1;
+        }
+        #zoom_window_text {
+            grid-row: 5 / 6;            
+            padding-left: 40px;
+        }
+        #process_window_text {
+            grid-row: 27 / 28;
+            padding-left: 20px;
+        }
+        #cam_input {
             border: 1px solid #999;
+            display: block;
+            margin: auto;
+            grid-row: 3 / 15;
+            grid-column: 4 / 10;
+            align-self: center;
+
+        }
+        #add {
+            grid-column: 6 / 8;
+            grid-row: 5 / 15;
+            align-self: center;
+            cursor: pointer;
+            z-index: 1;
+            display: block;
+            margin-left: 50px;
+        }
+        #canvas_output {
+            border: 1px solid #999;
+            display: block;
+            margin: auto;
+            grid-row: 16 / 35;
+            grid-column: 4 / 10;
+            align-self: center;
+        }
+        #title {
+            grid-column: 6 / 8;
+            grid-row: 1 / 2;
+            margin-bottom: 5px;
+            margin-top: 10px;
+            padding-left: 80px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(11, 1fr);
+            max-width: 1280px;
+            grid-template-rows: repeat(39, 1fr);
+            max-height: 780px;
+            margin: auto;
+            padding: 0%;
+            margin-left: 0px;
+            margin-right: 0px;
         }
     </style>
 </head>
 <body>
-    <div>
+    <!-- <p>
+        <h3 id="title">iExam</h3>
+    </p> -->
+    
+    <div class="container">
+
+        <h2 id="title">iExam</h2>
+        <p id="zoom_window_text">Zoom window</p>
         <video id="cam_input" width="640" height="360"></video>
+        <img id="add" src="add.svg" alt="upload video window" width="128" height="128">
+        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg> -->
+        <p id="process_window_text">Process window</p>
+        <canvas id="canvas_output" width="640" height="360">This box is for capturing student face</canvas>
     </div>
-    <br/>
+    <!-- <br/>
     <div>
-        <canvas id="canvas_output" width="640" height="360"></canvas>
-    </div>
+    </div> -->
 </body>
 <script type="text/JavaScript">
+
+let add_button = document.getElementById("add");
+let zoom_window_text = document.getElementById("zoom_window_text");
+let process_window_text = document.getElementById("process_window_text");
+let utils = new Utils();
+
+add.addEventListener("click", function(e) {
+    let video = document.getElementById("cam_input");
+    navigator.mediaDevices.getDisplayMedia({ video: true, audio: false })
+    .then(function(stream) {
+        video.srcObject = stream;
+        let settings = stream.getVideoTracks()[0].getSettings();
+        console.log(settings);
+        add_button.style.display = "none";
+        zoom_window_text.style.display = "none";
+        process_window_text.style.display = "none";
+        // FPS = settings.frameRate;
+        video.play();
+    })
+    .then(()=> {
+        utils.loadOpenCv(openCvReady);
+    })
+    .catch(function(err) {
+        console.log("An error occurred! " + err);
+    });
+})
+
 function openCvReady() {
-    cv['onRuntimeInitialized']=()=>{
-        let FPS = 30;
-        let video = document.getElementById("cam_input"); // video is the id of video tag
-        navigator.mediaDevices.getDisplayMedia({ video: true, audio: false })
-        .then(function(stream) {
-            video.srcObject = stream;
-            let settings = stream.getVideoTracks()[0].getSettings();
-            console.log(settings);
-
-            // FPS = settings.frameRate;
-            video.play();
-        })
-        .catch(function(err) {
-            console.log("An error occurred! " + err);
-        });
-        // console.log(cv);
-        let src = new cv.Mat(video.height, video.width, cv.CV_8UC4);
-        let dst = new cv.Mat(video.height, video.width, cv.CV_8UC1);
-        let gray = new cv.Mat();
-        let cap = new cv.VideoCapture(cam_input);
-        let faces = new cv.RectVector();
-        let classifier = new cv.CascadeClassifier();
-        let minsize = new cv.Size(0, 0);
-        let maxsize = new cv.Size(1000, 1000);
-        let utils = new Utils();
-        let faceCascadeFile = 'haarcascade_frontalface_default.xml';
-        utils.createFileFromUrl(faceCascadeFile, '../haarcascades/'+faceCascadeFile, () => {
-            classifier.load(faceCascadeFile); // in the callback, load the cascade from file 
-        });
-        let face_row = -1;
-        let face_col = -1;
-        let clip_width = video.width/5;
-        let clip_height = video.height/5;
-        function processVideo() {
-            let begin = Date.now();
-            if (video.srcObject!=null){
-                cap.read(src);
-                src.copyTo(dst);
-                cv.cvtColor(dst, gray, cv.COLOR_RGBA2GRAY, 0);
-                try{
-                    classifier.detectMultiScale(gray, faces, 1.1, 3);
-                    console.log("face size: "+ faces.size());
-                }catch(err){
-                    console.log(err);
-                }
-                for (let i = 0; i < faces.size(); ++i) {
-                    let face = faces.get(i);
-                    // console.log(face);
-                    let face_row = parseInt(face.y/clip_height);
-                    let face_col = parseInt(face.x/clip_width);
-
-                    let tmp_row = parseInt((face.y+face.height-5) / clip_height);
-                    let tmp_col = parseInt((face.x+face.width-5) / clip_width);
-                    // console.log([face_row, face_col, tmp_row, tmp_col]);
-                    if (face.width>=clip_width || face.height>=clip_height || tmp_row!=face_row || tmp_col!=face_col)
-                        continue;
-
-                    let point1 = new cv.Point(face.x, face.y);
-                    let point2 = new cv.Point(face.x + face.width, face.y + face.height);
-                    cv.rectangle(dst, point1, point2, [255, 0, 0, 255]);
-                }
-                cv.imshow("canvas_output", dst);
+    // console.log(cv);
+    let FPS = 30;
+    let video = document.getElementById("cam_input");
+    let src = new cv.Mat(video.height, video.width, cv.CV_8UC4);
+    let dst = new cv.Mat(video.height, video.width, cv.CV_8UC1);
+    let gray = new cv.Mat();
+    let cap = new cv.VideoCapture(cam_input);
+    let faces = new cv.RectVector();
+    let classifier = new cv.CascadeClassifier();
+    let minsize = new cv.Size(0, 0);
+    let maxsize = new cv.Size(1000, 1000);
+    let faceCascadeFile = 'haarcascade_frontalface_default.xml';
+    utils.createFileFromUrl(faceCascadeFile, '../haarcascades/'+faceCascadeFile, () => {
+        classifier.load(faceCascadeFile); // in the callback, load the cascade from file 
+    });
+    let face_row = -1;
+    let face_col = -1;
+    let clip_width = video.width/5;
+    let clip_height = video.height/5;
+    function processVideo() {
+        let begin = Date.now();
+        if (video.srcObject!=null){
+            cap.read(src);
+            src.copyTo(dst);
+            cv.cvtColor(dst, gray, cv.COLOR_RGBA2GRAY, 0);
+            try{
+                classifier.detectMultiScale(gray, faces, 1.1, 3);
+                console.log("face size: "+ faces.size());
+            }catch(err){
+                console.log(err);
             }
-            // schedule next one.
-            let delay = 1000/FPS - (Date.now() - begin);
-            setTimeout(processVideo, delay);
+            for (let i = 0; i < faces.size(); ++i) {
+                let face = faces.get(i);
+                // console.log(face);
+                let face_row = parseInt(face.y/clip_height);
+                let face_col = parseInt(face.x/clip_width);
+
+                let tmp_row = parseInt((face.y+face.height-5) / clip_height);
+                let tmp_col = parseInt((face.x+face.width-5) / clip_width);
+                // console.log([face_row, face_col, tmp_row, tmp_col]);
+                if (face.width>=clip_width || face.height>=clip_height || tmp_row!=face_row || tmp_col!=face_col)
+                    continue;
+
+                let point1 = new cv.Point(face.x, face.y);
+                let point2 = new cv.Point(face.x + face.width, face.y + face.height);
+                cv.rectangle(dst, point1, point2, [255, 0, 0, 255]);
+            }
+            cv.imshow("canvas_output", dst);
         }
-        // schedule first one.
-        setTimeout(processVideo, 0);
-        // 识别多少， 提高识别率
-        // 测cpu的
-    };
+        // schedule next one.
+        let delay = 1000/FPS - (Date.now() - begin);
+        setTimeout(processVideo, delay);
+    }
+    // schedule first one.
+    setTimeout(processVideo, 0);
+    // 识别多少， 提高识别率
+    // 测cpu的        
 }
 
 function Utils() {
@@ -115,6 +195,40 @@ function Utils() {
         };
         request.send();
         
+    };
+
+    const OPENCV_URL = 'opencv.js';
+    this.loadOpenCv = function(onloadCallback) {
+        let script = document.createElement('script');
+        script.setAttribute('async', '');
+        script.setAttribute('type', 'text/javascript');
+        script.addEventListener('load', async () => {
+            if (cv.getBuildInformation)
+            {
+                console.log(cv.getBuildInformation());
+                onloadCallback();
+            }
+            else
+            {
+                // WASM
+                if (cv instanceof Promise) {
+                    cv = await cv;
+                    console.log(cv.getBuildInformation());
+                    onloadCallback();
+                } else {
+                    cv['onRuntimeInitialized']=()=>{  //satisfy this condition
+                        console.log(cv.getBuildInformation()); 
+                        onloadCallback();
+                    }
+                }
+            }
+        });
+        script.addEventListener('error', () => {
+            self.printError('Failed to load ' + OPENCV_URL);
+        });
+        script.src = OPENCV_URL;
+        let node = document.getElementsByTagName('script')[0];
+        node.parentNode.insertBefore(script, node);
     };
 }
 
