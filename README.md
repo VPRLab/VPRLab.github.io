@@ -1,14 +1,4 @@
 # VPRLab.github.io
-https://vprlab.github.io
 
-$ git clone https://YourUserName@github.com/VPRLab/ProjectName
-
-// make you local change
-
-$ git add .
-
-$ git status //check the files you want to commit
-
-$ git commit -a
-
-$ git push origin main
+Homepage: https://vprlab.github.io <br>
+iExam: https://vprlab.github.io/iexam/
