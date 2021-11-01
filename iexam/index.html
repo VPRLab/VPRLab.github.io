@@ -9,30 +9,37 @@
         }
         #zoom_window_text, #process_window_text {
             margin: 0px;
-            grid-column: 6 / 9;
+            grid-column: 5 / 8;
             font-size: 50px;
             z-index: 1;
         }
         #zoom_window_text {
-            grid-row: 5 / 6;            
-            padding-left: 80px;
-        }
-        #process_window_text {
-            grid-row: 27 / 28;
+            grid-row: 6 / 7;            
             padding-left: 50px;
         }
-        #cam_input {
+        #process_window_text {
+            grid-row: 26 / 27;
+            padding-left: 50px;
+        }
+        #cam_input, #canvas_output {
             border: 1px solid #999;
             display: block;
-            margin: auto;
-            grid-row: 3 / 15;
-            grid-column: 4 / 10;
-            align-self: center;
-            position: static;
+            margin: 0px;
+            grid-column: 2 / 11;
+        }
+        #cam_input { 
+            grid-row: 3 / 19;
+            overflow: auto;
+            object-fit:fill;
+        }
+        #canvas_output {
+            grid-row: 20 / 36;
+            min-height: 720px;
+            max-width: 1200px;
         }
         #add {
-            grid-column: 6 / 8;
-            grid-row: 5 / 15;
+            grid-column: 5 / 8;
+            grid-row: 10 / 12;
             align-self: center;
             cursor: pointer;
             z-index: 1;
@@ -40,42 +47,32 @@
             margin-left: 150px;
         }
         #tip {
-            grid-column: 8 / 10;
-            grid-row: 5 / 9;
+            grid-column: 2 / 10;
+            grid-row: 2 / 3;
             align-self: center;
             width: 200px;
             padding-left: 75px;
             font-size: 25px;
-            display: block;
-        }
-        #chat_img {
-            grid-column: 8 / 10;
-            grid-row: 4 / 15;
-            display: block;
-        }
-        #canvas_output {
-            border: 1px solid #999;
-            display: block;
-            margin: auto;
-            grid-row: 16 / 35;
-            grid-column: 4 / 10;
-            align-self: center;
+            white-space: nowrap;
+            margin-top: 0px;
+            margin-bottom: 10px;
         }
         #title {
-            grid-column: 6 / 8;
+            grid-column: 5 / 8;
             grid-row: 1 / 2;
             margin-bottom: 5px;
             margin-top: 10px;
             padding-left: 150px;
             font-size: 50px;
+            display: grid;
+            align-items: center;
         }
         .container {
             display: grid;
             grid-template-columns: repeat(11, 1fr);
-            max-width: 1440px;
-            grid-template-rows: repeat(39, 1fr);
+            max-width: 100%;
+            grid-template-rows: repeat(35, 1fr);
             max-height: 1560px;
-            margin: auto;
             padding: 0%;
             margin-left: 0px;
             margin-right: 0px;
@@ -84,6 +81,7 @@
             display: grid;
             margin-top: 20px;
             text-align: center;
+            position: relative;
         }
         #author {
             margin-bottom: 0px;
@@ -95,15 +93,16 @@
         <h2 id="title">iExam</h2>
         <h6 id="tip">Please click add button to import the Zoom stream. Then you can scroll down to the iExam window.</h6>
         <p id="zoom_window_text">Zoom window</p>
-        <video id="cam_input" width="1280" height="720"></video>
+        <video id="cam_input" width="1200" height="690"></video>
         <img id="add" src="add.svg" alt="upload video window" width="128" height="128">
-        <img id="chat_img" src="chat.svg" alt="right chatbox" width="384" height="384">
         <p id="process_window_text">iExam window</p>
-        <canvas id="canvas_output" width="1280" height="720">This box is for capturing student face</canvas>
+        <canvas id="canvas_output" width="1200" height="690">This box is for capturing student face</canvas>
     </div>
     <div class="footer">
-       <p id="author">Author: YANG Xu, Supervisor: WU Daoyuan (VPRLab)</p>
-       <p>Last Modified: Mon Oct 25 2021 23:12:29 GMT+0800 (Hong Kong Standard Time)</p>
+        <p>GitHub Repo: <a href="https://github.com/VPRLab/VPRLab.github.io" target="_blank">https://github.com/VPRLab/VPRLab.github.io</a></p>
+        <p>For more post-process for Zoom recording, please view: <a href="https://github.com/VPRLab/iExam/tree/test" target="_blank">https://github.com/VPRLab/iExam/tree/test</p>
+       <!-- <p id="author">Author: YANG Xu, Supervisor: WU Daoyuan (VPRLab)</p>
+       <p>Last Modified: Mon Oct 25 2021 23:12:29 GMT+0800 (Hong Kong Standard Time)</p> -->
     </div>
 </body>
 <script type="text/JavaScript">
@@ -111,12 +110,12 @@
 let add_button = document.getElementById("add");
 let zoom_window_text = document.getElementById("zoom_window_text");
 let process_window_text = document.getElementById("process_window_text");
-let chat_img = document.getElementById("chat_img");
-let tip = document.getElementById("tip");
+let video = document.getElementById("cam_input");
+let output = document.getElementById("canvas_output");
+let container = document.getElementById("container");
 let utils = new Utils();
 
 add.addEventListener("click", function(e) {
-    let video = document.getElementById("cam_input");
     navigator.mediaDevices.getDisplayMedia({ video: true, audio: false })
     .then(function(stream) {
         video.srcObject = stream;
@@ -125,9 +124,9 @@ add.addEventListener("click", function(e) {
         add_button.style.display = "none";
         zoom_window_text.style.display = "none";
         process_window_text.style.display = "none";
-        chat_img.style.display = "none";
-        tip.style.display = "none";
         // FPS = settings.frameRate;
+        output.style.width = video.style.width;
+        output.style.height = video.style.height;
         video.play();
     })
     .then(()=> {
@@ -193,9 +192,7 @@ function openCvReady() {
         setTimeout(processVideo, delay);
     }
     // schedule first one.
-    setTimeout(processVideo, 0);
-    // 识别多少， 提高识别率
-    // 测cpu的        
+    setTimeout(processVideo, 0); 
 }
 
 function Utils() {
