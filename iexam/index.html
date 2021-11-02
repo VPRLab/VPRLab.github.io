@@ -87,8 +87,9 @@
             margin-bottom: 0px;
         }
     </style>
+    
 </head>
-<body>
+<body onload="checkBrowser()">
     <div class="container">
         <h2 id="title">iExam</h2>
         <h6 id="tip">Please click add button to import the Zoom stream. Then you can scroll down to the iExam window.</h6>
@@ -99,8 +100,8 @@
         <canvas id="canvas_output" width="1200" height="690">This box is for capturing student face</canvas>
     </div>
     <div class="footer">
-        <p>GitHub Repo: <a href="https://github.com/VPRLab/VPRLab.github.io" target="_blank">https://github.com/VPRLab/VPRLab.github.io</a></p>
-        <p>For more post-process for Zoom recording, please view: <a href="https://github.com/VPRLab/iExam/tree/test" target="_blank">https://github.com/VPRLab/iExam/tree/test</p>
+        <p>Details for iExam please refer to slides: <a href="https://daoyuan14.github.io/slides/Expo21_iExam.pdf" target="_blank">https://daoyuan14.github.io/slides/Expo21_iExam.pdf</a></p>
+        <p>Post-exam recording analysis for desktop version, please view: <a href="https://github.com/VPRLab/iExam/tree/test" target="_blank">https://github.com/VPRLab/iExam/tree/test</p>
        <!-- <p id="author">Author: YANG Xu, Supervisor: WU Daoyuan (VPRLab)</p>
        <p>Last Modified: Mon Oct 25 2021 23:12:29 GMT+0800 (Hong Kong Standard Time)</p> -->
     </div>
@@ -114,6 +115,17 @@ let video = document.getElementById("cam_input");
 let output = document.getElementById("canvas_output");
 let container = document.getElementById("container");
 let utils = new Utils();
+
+function checkBrowser() {
+    if((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) != -1 || navigator.userAgent.indexOf("Chrome") != -1 || navigator.userAgent.indexOf("Firefox") != -1 || ((navigator.userAgent.indexOf("MSIE") != -1 ) || (!!document.documentMode == true )))
+        console.log("browser owns capture window function")
+    else if(navigator.userAgent.indexOf("Safari") != -1){
+        while(true)
+            alert("You use Safari now, please change another browser because Safari not support capture window function");
+    }
+    else 
+       alert('unknown');
+}
 
 add.addEventListener("click", function(e) {
     navigator.mediaDevices.getDisplayMedia({ video: true, audio: false })
