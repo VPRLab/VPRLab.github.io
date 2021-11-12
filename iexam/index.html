@@ -16,6 +16,8 @@
             text-align:center;
             height: 50px;
             white-space: nowrap;
+            display: flex;
+            justify-content: center;
         }
         #zoom_window_text {
             grid-row: 6 / 7;            
@@ -31,12 +33,12 @@
             grid-column: 2 / 11;
             display: flex;
             align-items: center;
-            justify-items: center;
+            justify-content: center;
         }
         #cam_input { 
             grid-row: 3 / 19;
             overflow: auto;
-            object-fit:fill;
+            object-fit:scale-down;
         }
         #canvas_output {
             grid-row: 20 / 36;
@@ -51,7 +53,7 @@
             margin-left: 150px;
             display: flex;
             align-items: center;
-            justify-items: center;
+            justify-content: center;
         }
         #tip {
             grid-column: 2 / 10;
@@ -79,18 +81,23 @@
         .container {
             display: grid;
             grid-template-columns: repeat(11, 1fr);
-            max-width: 100%;
+            width: 100%;
             grid-template-rows: repeat(35, 1fr);
-            max-height: 1560px;
+            height: 1560px;
             padding: 0%;
             margin-left: 0px;
             margin-right: 0px;
+            position: relative;
         }
         .footer {
-            display: grid;
             margin-top: 20px;
+            width: 100%;
             text-align: center;
             position: relative;
+        }
+        .footer-inline-div {
+            display: flex;
+            justify-content: center;
         }
         #author {
             margin-bottom: 0px;
@@ -109,10 +116,14 @@
         <canvas id="canvas_output" width="1200" height="690">This box is for capturing student face</canvas>
     </div>
     <div class="footer">
+        <div class="footer-inline-div">
         <p>Details for iExam please refer to slides: <a href="https://daoyuan14.github.io/slides/Expo21_iExam.pdf" target="_blank">https://daoyuan14.github.io/slides/Expo21_iExam.pdf</a></p>
+        </div>
+        <div class="footer-inline-div">
         <p>Post-exam recording analysis for desktop version, please view: <a href="https://github.com/VPRLab/iExam/tree/test" target="_blank">https://github.com/VPRLab/iExam/tree/test</p>
-       <!-- <p id="author">Author: YANG Xu, Supervisor: WU Daoyuan (VPRLab)</p>
-       <p>Last Modified: Mon Oct 25 2021 23:12:29 GMT+0800 (Hong Kong Standard Time)</p> -->
+        </div>
+        <!-- <p id="author">Author: YANG Xu, Supervisor: WU Daoyuan (VPRLab)</p>
+        <p>Last Modified: Mon Oct 25 2021 23:12:29 GMT+0800 (Hong Kong Standard Time)</p> -->
     </div>
 </body>
 <script type="text/JavaScript">
@@ -172,7 +183,8 @@ function openCvReady() {
     let maxsize = new cv.Size(1000, 1000);
     let faceCascadeFile = 'haarcascade_frontalface_default.xml';
     utils.createFileFromUrl(faceCascadeFile, '../haarcascades/'+faceCascadeFile, () => {
-        classifier.load(faceCascadeFile); // in the callback, load the cascade from file 
+        try{classifier.load(faceCascadeFile);} // in the callback, load the cascade from file 
+        catch(err){console.log(err);}
     });
     let face_row = -1;
     let face_col = -1;
