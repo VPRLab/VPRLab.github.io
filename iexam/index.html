@@ -1,3 +1,4 @@
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,124 +8,132 @@
             margin: 0;
             align-self: center;
         }
-        #zoom_window_text, #process_window_text {
-            margin: 0px;
-            grid-column: 5 / 8;
-            font-size: 50px;
-            z-index: 1;
-            line-height: 50px;
-            text-align:center;
-            height: 50px;
-            white-space: nowrap;
-            display: flex;
-            justify-content: center;
-        }
-        #zoom_window_text {
-            grid-row: 6 / 7;            
-            padding-left: 50px;
-        }
-        #process_window_text {
-            grid-row: 26 / 27;
-            padding-left: 50px;
-        }
-        #cam_input, #canvas_output {
-            border: 1px solid #999;
-            margin: auto;
-            grid-column: 2 / 11;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #cam_input { 
-            grid-row: 3 / 19;
-            overflow: auto;
-            object-fit:scale-down;
-        }
-        #canvas_output {
-            grid-row: 20 / 36;
-            min-height: 720px;
-            max-width: 1200px;
-        }
-        #add {
-            grid-column: 5 / 8;
-            grid-row: 10 / 12;
-            cursor: pointer;
-            z-index: 1;
-            margin-left: 150px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        #tip {
-            grid-column: 2 / 10;
-            grid-row: 2 / 3;
-            width: 200px;
-            padding-left: 75px;
-            font-size: 25px;
-            white-space: nowrap;
-            margin-top: 0px;
-            margin-bottom: 10px;
-            align-items: center;
-            justify-content: center;
-        }
-        #title {
-            grid-column: 5 / 8;
-            grid-row: 1 / 2;
-            margin-bottom: 5px;
-            margin-top: 10px;
-            font-size: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
         .container {
             display: grid;
-            grid-template-columns: repeat(11, 1fr);
             width: 100%;
-            grid-template-rows: repeat(35, 1fr);
-            height: 1560px;
-            padding: 0%;
-            margin-left: 0px;
-            margin-right: 0px;
-            position: relative;
-            overflow: hidden;
+            height: 1660px;
+            grid-template-areas: 
+                "title title title"
+                "tip tip tip"
+                "nav1 main1 nav2"
+                "nav1 middle nav2"
+                "nav1 main2 nav2"
+                "nav1 foot nav2";
+            grid-template-rows: 60px 50px 1fr 50px 1fr 100px;
+            grid-template-columns: 150px 1fr 150px;
         }
-        .footer {
-            margin-top: 20px;
-            width: 100%;
+
+        #title {
+            grid-area: title;
+            /* background-color: #8ca0ff; */
+            font-size: 50px;
+            margin: 0;
             text-align: center;
+        }
+
+        #tip {
+            grid-area: tip;
+            /* background-color: darkorange; */
+            font-size: 25px;
+            text-align: center; 
+        }
+
+        #middle {
+            grid-area: middle;
+            /* background-color: deepskyblue; */
+        }
+
+        #nav1 {
+            grid-area: nav1;
+            /* background-color: #ffa08c; */
+        }
+
+        #nav2 {
+            grid-area: nav2;
+            /* background-color: cornflowerblue; */
+        }
+
+        #main1 {
+            grid-area: main1;
+            /* background-color: #ffff64; */
+        }
+
+        #cam_container {
             position: relative;
+            text-align: center;
         }
-        .footer-inline-div {
-            display: flex;
-            justify-content: center;
+
+        #cam_input, #canvas_output {
+            border: 1px solid #999;
         }
-        #author {
-            margin-bottom: 0px;
+
+        #zoom_window_text {
+            font-size: 50px;
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #add {
+            cursor: pointer;
+            z-index: 1;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #main2 {
+            grid-area: main2;
+            /* background-color: darkcyan; */
+        }
+
+        #output_container {
+            position: relative;
+            text-align: center;
+        }
+
+        #process_window_text {
+            font-size: 50px;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #footer {
+            grid-area: foot;
+            /* background-color: #8cffa0; */
+            text-align: center;
         }
     </style>
-    
 </head>
 <body onload="checkBrowser()">
     <div class="container">
-        <h2 id="title">iExam</h2>
-        <h6 id="tip">Please click add button to import the Zoom stream. Then you can scroll down to the iExam window.</h6>
-        <p id="zoom_window_text">Zoom window</p>
-        <video id="cam_input" width="1200" height="690"></video>
-        <img id="add" src="add.svg" alt="upload video window" width="128" height="128">
-        <p id="process_window_text">iExam window</p>
-        <canvas id="canvas_output" width="1200" height="690">This box is for capturing student face</canvas>
-    </div>
-    <div class="footer">
-        <div class="footer-inline-div">
-        <p>Details for iExam please refer to slides: <a href="https://daoyuan14.github.io/slides/Expo21_iExam.pdf" target="_blank">https://daoyuan14.github.io/slides/Expo21_iExam.pdf</a></p>
+        <div id="title">iExam</div>
+        <div id="tip">Please click add button to import the Zoom stream. Then you can scroll down to the iExam window.</div>
+        <div id="middle"></div>
+        <nav id="nav1"></nav>
+        <nav id="nav2"></nav>
+        <div id="main1">
+            <div id="cam_container">
+                <video id="cam_input" width="1100px" height="690px"></video>
+                <p id="zoom_window_text">Zoom window</p>
+                <img id="add" src="add.svg" alt="upload video window" width="128" height="128">
+            </div>
         </div>
-        <div class="footer-inline-div">
-        <p>Post-exam recording analysis for desktop version, please view: <a href="https://github.com/VPRLab/iExam/tree/test" target="_blank">https://github.com/VPRLab/iExam/tree/test</p>
+        <div id="main2">
+            <div id="output_container">
+                <p id="process_window_text">iExam window</p>
+                <canvas id="canvas_output" width="1100px" height="690px">This box is for capturing student face</canvas>
+            </div>
         </div>
-        <!-- <p id="author">Author: YANG Xu, Supervisor: WU Daoyuan (VPRLab)</p>
-        <p>Last Modified: Mon Oct 25 2021 23:12:29 GMT+0800 (Hong Kong Standard Time)</p> -->
-    </div>
+        <div id="footer">
+            <p>Details for iExam please refer to slides: <a href="https://daoyuan14.github.io/slides/Expo21_iExam.pdf" target="_blank">https://daoyuan14.github.io/slides/Expo21_iExam.pdf</a></p>
+            <p>Post-exam recording analysis for desktop version, please view: <a href="https://github.com/VPRLab/iExam/tree/test" target="_blank">https://github.com/VPRLab/iExam/tree/test</p>
+        </div>
+    </div>         
 </body>
 <script type="text/JavaScript">
 
@@ -182,7 +191,7 @@ function openCvReady() {
     let minsize = new cv.Size(0, 0);
     let maxsize = new cv.Size(1000, 1000);
     let faceCascadeFile = 'haarcascade_frontalface_default.xml';
-    utils.createFileFromUrl(faceCascadeFile, '../haarcascades/'+faceCascadeFile, () => {
+    utils.createFileFromUrl(faceCascadeFile, faceCascadeFile, () => {
         try{classifier.load(faceCascadeFile);} // in the callback, load the cascade from file 
         catch(err){console.log(err);}
     });
@@ -216,7 +225,7 @@ function openCvReady() {
 
                 let point1 = new cv.Point(face.x, face.y);
                 let point2 = new cv.Point(face.x + face.width, face.y + face.height);
-                cv.rectangle(dst, point1, point2, [255, 0, 0, 255]);
+                cv.rectangle(dst, point1, point2, [73, 171, 232, 255]);
             }
             cv.imshow("canvas_output", dst);
         }
