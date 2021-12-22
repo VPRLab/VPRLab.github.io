@@ -223,12 +223,13 @@ function openCvReady() {
                 let tmp_row = parseInt((face.y+face.height-5) / clip_height);
                 let tmp_col = parseInt((face.x+face.width-5) / clip_width);
                 // console.log([face_row, face_col, tmp_row, tmp_col]);
-                if (face.width>=clip_width || face.height>=clip_height || tmp_row!=face_row || tmp_col!=face_col)
-                    continue;
+                //check for error
+                // if (face.width>=clip_width || face.height>=clip_height || tmp_row!=face_row || tmp_col!=face_col)
+                //     continue;
 
                 let point1 = new cv.Point(face.x, face.y);
                 let point2 = new cv.Point(face.x + face.width, face.y + face.height);
-                cv.rectangle(dst, point1, point2, [73, 171, 232, 255]);
+                cv.rectangle(dst, point1, point2, [73, 171, 232, 255], 2);
             }
             cv.imshow("canvas_output", dst);
         }
