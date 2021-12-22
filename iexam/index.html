@@ -196,7 +196,7 @@ add.addEventListener("click", function(e) {
         add_button.style.display = "none";
         zoom_window_text.style.display = "none";
         process_window_text.style.display = "none";
-        FPS = settings.frameRate;
+        // FPS = settings.frameRate;
         var output_width = window.innerWidth-300;
         output.width = output_width;
         video.width = output_width;
@@ -213,7 +213,7 @@ add.addEventListener("click", function(e) {
 
 function openCvReady() {
     // console.log(cv);
-    // let FPS = 30;
+    let FPS = 30;
     let video = document.getElementById("cam_input");
     let src = new cv.Mat(video.height, video.width, cv.CV_8UC4);
     let dst = new cv.Mat(video.height, video.width, cv.CV_8UC1);
