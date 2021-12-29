@@ -248,7 +248,7 @@ function openCvReady() {
             }
             for (let i = 0; i < faces.size(); ++i) {
                 let face = faces.get(i);
-                console.log('face (' + i + ') ' + [face.x, face.y]);
+                console.log('face (' + i + ') ' + [face.x, face.y, face.width, face.height]);
                 let face_row = parseInt(face.y/clip_height);
                 let face_col = parseInt(face.x/clip_width);
 
