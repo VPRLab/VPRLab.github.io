@@ -84,12 +84,6 @@ function openCvReady() {
     let frameBGR = new cv.Mat(video.height, video.width, cv.CV_8UC3);
     let gray = new cv.Mat();
     let cap = new cv.VideoCapture(cam_input);
-    let classifier = new cv.CascadeClassifier();
-    let faceCascadeFile = 'haarcascade_frontalface_default.xml';
-    utils.createFileFromUrl(faceCascadeFile, faceCascadeFile, () => {
-        try{classifier.load(faceCascadeFile);} // in the callback, load the cascade from file 
-        catch(err){console.log(err);}
-    });
     function processVideo() {
         let begin = Date.now();
         if (video.srcObject!=null){
