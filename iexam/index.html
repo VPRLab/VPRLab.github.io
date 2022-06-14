@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>realtime iExam</title>
-    <!-- <script async src="./opencv.js" type="text/javascript"></script> -->
     <style>
         body {
             margin: 0;
@@ -12,7 +11,7 @@
         .container {
             display: grid;
             width: 100%;
-            height: 1910px;
+            height: 1710px;
             grid-template-areas: 
                 "title title title"
                 "tip tip tip"
@@ -20,15 +19,14 @@
                 "nav1 main1 nav2"
                 "nav1 middle nav2"
                 "nav1 main2 nav2"
-                "nav1 msg nav2"
                 "nav1 foot nav2";
-            grid-template-rows: 60px 50px 50px 700px 50px 700px 200px 100px;
+            grid-template-rows: 60px 50px 50px 700px 50px 700px 100px;
             grid-template-columns: 150px 1fr 150px;
         }
 
         #title {
             grid-area: title;
-            background-color: #8ca0ff;
+            /* background-color: #8ca0ff; */
             font-size: 50px;
             margin: 0;
             text-align: center;
@@ -36,25 +34,22 @@
 
         #tip {
             grid-area: tip;
-            background-color: darkorange;
+            /* background-color: darkorange; */
             font-size: 25px;
             text-align: center; 
         }
 
         #button {
             grid-area: button;
-            background-color: cornflowerblue;
             text-align: center;
         }
+
         #btn1, #btn2 {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            display: inline-block;
+            border: 2px solid black;
+            background-color: white;
+            border-color: cornflowerblue;
+            padding: 14px 28px;
             font-size: 16px;
-            margin: 4px 2px;
             cursor: pointer;
         }
 
@@ -75,7 +70,7 @@
 
         #main1 {
             grid-area: main1;
-            background-color: #ffff64;
+            /* background-color: #ffff64; */
         }
 
         #cam_container {
@@ -89,20 +84,6 @@
             border: 1px solid #999;
             object-fit: fill;
         }
-
-        #msg {
-            border: 1px solid #999;
-            grid-area: msg;
-            /* background-color: rgba(148, 150, 74, 0.247); */
-        }
-
-        #message_output {
-            margin: 0px 10px 5px 10px;
-            height: 200px;
-            font-size: 20px;
-            overflow: auto;
-        }
-
 
         #zoom_window_text {
             font-size: 50px;
@@ -142,7 +123,7 @@
 
         #footer {
             grid-area: foot;
-            background-color: #8cffa0;
+            /* background-color: #8cffa0; */
             text-align: center;
         }
 
@@ -150,15 +131,11 @@
 </head>
 <body onload="checkBrowser()">
     <div class="container">
-        <div id="title">
-            iExam
-        </div>
+        <div id="title">iExam</div>
+        <div id="tip">Please click add button to import the Zoom stream. Then you can scroll down to the iExam window.</div>
         <div id="button">
             <button type="button" id="btn1" onclick="btn1_click()">Start Exam</button>
             <button type="button" id="btn2" onclick="btn2_click()">End Up</button>
-        </div>
-        <div id="tip">
-            Please click add button to import the Zoom stream. Then you can scroll down to the iExam window.
         </div>
         <div id="middle"></div>
         <nav id="nav1"></nav>
@@ -173,17 +150,12 @@
         <div id="main2">
             <div id="output_container">
                 <p id="process_window_text">iExam window</p>
-                <canvas id="canvas_output" height="700px">This box is for capturing student face</canvas>
-            </div>
-        </div>
-        <div id="msg">
-            <div id="message_output">
-                Here is something to output: <br/>
+                <canvas id="canvas_output" height="700px"></canvas>
             </div>
         </div>
         <div id="footer">
             <p>Details for iExam please refer to slides: <a href="https://daoyuan14.github.io/slides/Expo21_iExam.pdf" target="_blank">https://daoyuan14.github.io/slides/Expo21_iExam.pdf</a></p>
-            <p>Post-exam recording analysis for desktop version, please view: <a href="https://github.com/VPRLab/iExam/tree/test" target="_blank">https://github.com/VPRLab/iExam/tree/test</p>
+            <p>Post-exam recording analysis for desktop version, please view: <a href="https://github.com/VPRLab/iExam/tree/main" target="_blank">https://github.com/VPRLab/iExam/tree/main</p>
         </div>
     </div>         
 </body>
