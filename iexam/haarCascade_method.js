@@ -94,12 +94,12 @@ function openCvReady() {
                 classifier.detectMultiScale(gray, faces, 1.1, 3);
                 let today = new Date();
                 let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                // console.log("time: ", time, " face size: "+ faces.size());
+                console.log("time: ", time, " face size: "+ faces.size());
             }catch(err){
                 console.log(err);
             }for (let i = 0; i < faces.size(); ++i) {
                 let face = faces.get(i);
-                // console.log('face (' + i + ') ' + [face.x, face.y, face.width, face.height]);
+                console.log('face (' + i + ') ' + [face.x, face.y, face.width, face.height]);
                 let face_row = parseInt(face.y/clip_height);
                 let face_col = parseInt(face.x/clip_width);
 
